@@ -31,6 +31,10 @@ export const SignUpModal: React.FC<SignUpModalProps> = (props) => {
   const handleClose = () => onClose(false);
   //TODO: 入力されている文字列をクリアする
 
+  const handleSubmit = (event: any) => {
+    console.log(event);
+  };
+
   return (
     <ThemeProvider theme={TextFieldTheme}>
       <Modal
