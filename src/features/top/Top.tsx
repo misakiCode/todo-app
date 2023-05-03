@@ -1,9 +1,13 @@
-import React from 'react'
+import { Typography } from "@mui/material";
+import React from "react";
 
-interface TopProps {
-
-}
+interface TopProps {}
 
 export const Top: React.FC<TopProps> = ({}) => {
-        return ();
-}
+  return (
+    <React.Fragment>
+      <Typography>TOPページ</Typography>
+      <Typography>aaa</Typography>
+    </React.Fragment>
+  );
+};

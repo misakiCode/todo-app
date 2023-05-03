@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
-import { Top } from "./features/top/top";
+import { Top } from "./features/top/Top";
 
 function App() {
   return (
