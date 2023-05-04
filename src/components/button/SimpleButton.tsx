@@ -7,13 +7,16 @@ interface SimpleButtonProps {
   mx?: number;
   my?: number;
   width?: string;
+  onClick: any;
+  name: string;
 }
 
 export const SimpleButton: React.FC<SimpleButtonProps> = (props) => {
-  const { mx = 0, my = 0, width = "none" } = props;
+  const { mx = 0, my = 0, width = "none", onClick, name } = props;
   return (
     <Button
       variant="contained"
+      onClick={onClick}
       sx={{
         width: width,
         mx: mx,
@@ -25,7 +28,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = (props) => {
         },
       }}
     >
-      ユーザー登録
+      {name}
     </Button>
   );
 };
