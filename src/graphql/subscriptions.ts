@@ -6,7 +6,7 @@ export const onPutChatdata = /* GraphQL */ `
   subscription OnPutChatdata($chatId: String!) {
     onPutChatdata(chatId: $chatId) {
       chatId
-      datetimeUser
+      datetimeuser
       datetime
       message
       user

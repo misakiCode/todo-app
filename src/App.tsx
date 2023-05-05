@@ -5,6 +5,7 @@ import "./App.css";
 import { Top } from "./features/top/Top";
 import awsconfig from "./aws-exports";
 import { Amplify } from "aws-amplify";
+import { Chat } from "./features/chat/Chat";
 
 Amplify.configure({
   ...awsconfig,
@@ -24,6 +25,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Top />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
     </div>
   );

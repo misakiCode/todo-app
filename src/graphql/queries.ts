@@ -7,7 +7,7 @@ export const queryChatdataByServiceid = /* GraphQL */ `
     queryChatdataByServiceid(chatId: $chatId) {
       items {
         chatId
-        datetimeUser
+        datetimeuser
         datetime
         message
         user

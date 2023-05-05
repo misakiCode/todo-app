@@ -6,7 +6,7 @@ export const putChatdata = /* GraphQL */ `
   mutation PutChatdata($input: PutChatdataInput!) {
     putChatdata(input: $input) {
       chatId
-      datetimeUser
+      datetimeuser
       datetime
       message
       user

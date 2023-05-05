@@ -4,7 +4,7 @@
 
 export type PutChatdataInput = {
   chatId: string,
-  datetimeUser: string,
+  datetimeuser: string,
   datetime: string,
   message: string,
   user: string,
@@ -13,7 +13,7 @@ export type PutChatdataInput = {
 export type Chatdata = {
   __typename: "Chatdata",
   chatId?: string | null,
-  datetimeUser?: string | null,
+  datetimeuser?: string | null,
   datetime?: string | null,
   message?: string | null,
   user?: string | null,
@@ -33,7 +33,7 @@ export type PutChatdataMutation = {
   putChatdata?:  {
     __typename: "Chatdata",
     chatId?: string | null,
-    datetimeUser?: string | null,
+    datetimeuser?: string | null,
     datetime?: string | null,
     message?: string | null,
     user?: string | null,
@@ -50,7 +50,7 @@ export type QueryChatdataByServiceidQuery = {
     items?:  Array< {
       __typename: "Chatdata",
       chatId?: string | null,
-      datetimeUser?: string | null,
+      datetimeuser?: string | null,
       datetime?: string | null,
       message?: string | null,
       user?: string | null,
@@ -67,7 +67,7 @@ export type OnPutChatdataSubscription = {
   onPutChatdata?:  {
     __typename: "Chatdata",
     chatId?: string | null,
-    datetimeUser?: string | null,
+    datetimeuser?: string | null,
     datetime?: string | null,
     message?: string | null,
     user?: string | null,
