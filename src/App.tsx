@@ -9,12 +9,13 @@ import { Amplify } from "aws-amplify";
 Amplify.configure({
   ...awsconfig,
   Auth: {
-    cookieStorage: {
-      domain: "localhost:3000",
-      path: "/",
-      expires: 365,
-      secure: true,
-    },
+    storage: window.sessionStorage,
+    //   cookieStorage: {
+    //     domain: "localhost:3000",
+    //     path: "/",
+    //     expires: 365,
+    //     secure: true,
+    //   },
   },
 });
 

@@ -107,6 +107,7 @@ export const SignUpModal: React.FC<SignUpModalProps> = (props) => {
       console.log(user);
       const a = await Auth.currentAuthenticatedUser();
       console.log(a);
+      handleClose();
     } catch (err: any) {
       console.log(err);
     }

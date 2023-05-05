@@ -13,12 +13,58 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { SignUpModal } from "./SignUpModal";
+import { TextField, ThemeProvider } from "@mui/material";
+import { TextFieldTheme } from "./styled/theme";
+import { grey } from "@mui/material/colors";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Auth } from "aws-amplify";
+import { useAuth } from "./../hooks/useAuth";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
+const textFieldStyle = {
+  width: "200px",
+  mt: 2,
+  "& label.Mui-focused": {
+    color: grey[50],
+    borderColor: "white",
+  },
+  "& label": {
+    color: grey[300],
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "white",
+    },
+    "&:hover fieldset": {
+      borderColor: "white",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "white",
+    },
+  },
+};
+
+type FormInput = {
+  email: string;
+  password: string;
+};
+
 export default function Header() {
+  const auth = useAuth();
   const [signUpModalOpen, setSignUpModalOpen] = React.useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm<FormInput>();
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -49,6 +95,29 @@ export default function Header() {
   };
 
   /**
+   * ログインボタン押下時イベント
+   */
+  const onSubmit = async () => {
+    //TODO: サインイン
+    try {
+      console.log(getValues("email"));
+      console.log(getValues("password"));
+      auth.signIn(getValues("email"), getValues("password"), (result) => {
+        if (result.isSuccessed) {
+          //ログイン成功
+        } else {
+          //TODO: エラー処理
+        }
+      });
+      // const user = await Auth.signIn(getValues("email"), getValues("password"));
+      // console.log(user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  console.log(auth.nickname);
+
+  /**
    * サインアップモーダル閉じる
    */
   const handleSignUpModalClose = () => {
@@ -57,6 +126,7 @@ export default function Header() {
 
   return (
     <React.Fragment>
+      {/* <ThemeProvider theme={TextFieldTheme}> */}
       <AppBar position="static">
         {/* <Container maxWidth="xl"> */}
         <Toolbar disableGutters>
@@ -76,7 +146,7 @@ export default function Header() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            TODO
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -132,7 +202,7 @@ export default function Header() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            TODO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -147,42 +217,75 @@ export default function Header() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Button sx={{ my: 2, color: "white" }} onClick={handleSignUp}>
-              ユーザー登録
-            </Button>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mx: 1 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            {!auth.isAuthenticated ? (
+              <React.Fragment>
+                <TextField
+                  {...register("email")}
+                  size="small"
+                  label={"メールアドレス"}
+                  sx={textFieldStyle}
+                />
+                <TextField
+                  {...register("password")}
+                  size="small"
+                  type="password"
+                  label={"パスワード"}
+                  sx={{ ...textFieldStyle, ml: 1 }}
+                />
+                <Button
+                  sx={{ my: 2, color: "white" }}
+                  onClick={handleSubmit(onSubmit)}
+                >
+                  ログイン
+                </Button>
+                <Button
+                  sx={{ my: 2, mr: 2, color: "white" }}
+                  onClick={handleSignUp}
+                >
+                  ユーザー登録
+                </Button>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mx: 1 }}>
+                    <Avatar
+                      alt={auth.nickname}
+                      src="/static/images/avatar/2.jpg"
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </React.Fragment>
+            )}
           </Box>
         </Toolbar>
 
         {/* </Container> */}
       </AppBar>
       <SignUpModal open={signUpModalOpen} onClose={handleSignUpModalClose} />
+      {/* </ThemeProvider> */}
     </React.Fragment>
   );
 }
