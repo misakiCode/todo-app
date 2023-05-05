@@ -83,7 +83,12 @@ export default function Header() {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (value: any) => {
+    // switch(value){
+    //   case:"Logout"
+
+    //   break;
+    // }
     setAnchorElUser(null);
   };
 
@@ -272,7 +277,10 @@ export default function Header() {
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <MenuItem
+                      key={setting}
+                      onClick={() => handleCloseUserMenu({ setting })}
+                    >
                       <Typography textAlign="center">{setting}</Typography>
                     </MenuItem>
                   ))}
