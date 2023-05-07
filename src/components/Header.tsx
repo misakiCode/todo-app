@@ -1,24 +1,24 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { SignUpModal } from "./SignUpModal";
-import { TextField, ThemeProvider } from "@mui/material";
-import { TextFieldTheme } from "./styled/theme";
+import MenuIcon from "@mui/icons-material/Menu";
+import { TextField } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import { grey } from "@mui/material/colors";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { Auth } from "aws-amplify";
+import * as React from "react";
+import { useForm } from "react-hook-form";
 import { useAuth } from "./../hooks/useAuth";
+import { AlertScackbar } from "./AlertScackbar";
+import { SignUpModal } from "./SignUpModal";
+import Msg from "../utils/Msg";
+import MuiAlert, { AlertColor, AlertProps } from "@mui/material/Alert";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -54,7 +54,9 @@ type FormInput = {
 export default function Header() {
   const auth = useAuth();
   const [signUpModalOpen, setSignUpModalOpen] = React.useState<boolean>(false);
-
+  const [isSnackbarOpend, setIsSnackbarOpend] = React.useState<boolean>(false);
+  const [message, setMessage] = React.useState<string>("");
+  const [snackbarType, setSnackbarType] = React.useState<AlertColor>("error");
   const {
     register,
     handleSubmit,
@@ -84,12 +86,26 @@ export default function Header() {
   };
 
   const handleCloseUserMenu = (value: any) => {
-    // switch(value){
-    //   case:"Logout"
+    console.log(value.setting);
+    switch (value.setting) {
+      case "Logout":
+        auth.signOut((result) => {
+          if (result.isSuccessed) {
+            //ログイン成功
+            console.log("ログアウト成功");
+          } else {
+            //TODO: エラー処理
+            console.log("ログアウト失敗");
+          }
+        });
 
-    //   break;
-    // }
+        break;
+    }
     setAnchorElUser(null);
+  };
+
+  const handleSnackbarClose = () => {
+    setIsSnackbarOpend(false);
   };
 
   /**
@@ -103,24 +119,38 @@ export default function Header() {
    * ログインボタン押下時イベント
    */
   const onSubmit = async () => {
-    //TODO: サインイン
-    try {
-      console.log(getValues("email"));
-      console.log(getValues("password"));
-      auth.signIn(getValues("email"), getValues("password"), (result) => {
-        if (result.isSuccessed) {
-          //ログイン成功
-        } else {
-          //TODO: エラー処理
+    auth.signIn(getValues("email"), getValues("password"), (result) => {
+      if (result.isSuccessed) {
+        //ログイン成功
+        setMessage(Msg.I101);
+        setSnackbarType("success");
+        setIsSnackbarOpend(true);
+      } else {
+        console.log(result);
+        //TODO: エラー処理
+        if (result.message.includes("AuthError")) {
+          //メールアドレス、パスワードが未入力の場合
+          setMessage(Msg.E102);
+          setSnackbarType("error");
+          setIsSnackbarOpend(true);
+        } else if (result.message.includes("NotAuthorizedException")) {
+          //パスワードを間違えた場合
+          if (result.message.includes("Password attempts exceeded")) {
+            //パスワードを間違え続けた場合
+          }
+          setMessage(Msg.E101);
+
+          setSnackbarType("error");
+          setIsSnackbarOpend(true);
+        } else if (result.message.includes("UserNotFoundException")) {
+          //メールアドレスが間違っている場合
+          setMessage(Msg.E101);
+          setSnackbarType("error");
+          setIsSnackbarOpend(true);
         }
-      });
-      // const user = await Auth.signIn(getValues("email"), getValues("password"));
-      // console.log(user);
-    } catch (err) {
-      console.log(err);
-    }
+      }
+    });
   };
-  console.log(auth.nickname);
 
   /**
    * サインアップモーダル閉じる
@@ -166,7 +196,6 @@ export default function Header() {
               <MenuIcon />
             </IconButton>
             <Menu
-              id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
@@ -252,7 +281,7 @@ export default function Header() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <Tooltip title="Open settings">
+                <Tooltip title="メニューを開く">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mx: 1 }}>
                     <Avatar
                       alt={auth.nickname}
@@ -292,7 +321,15 @@ export default function Header() {
 
         {/* </Container> */}
       </AppBar>
+      {/* モーダル、スナックバー */}
       <SignUpModal open={signUpModalOpen} onClose={handleSignUpModalClose} />
+
+      <AlertScackbar
+        isOpend={isSnackbarOpend}
+        onClose={handleSnackbarClose}
+        message={message}
+        type={snackbarType}
+      />
       {/* </ThemeProvider> */}
     </React.Fragment>
   );

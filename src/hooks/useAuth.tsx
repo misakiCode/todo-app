@@ -119,9 +119,10 @@ const useProvideAuth = (): UseAuth => {
       })
       .catch((err) => {
         //エラーハンドリング
+        console.log(err);
         callback({
           isSuccessed: false,
-          message: "認証に失敗しました。",
+          message: err.name,
         });
       });
   };
