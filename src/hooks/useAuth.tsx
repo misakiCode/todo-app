@@ -57,6 +57,7 @@ const useProvideAuth = (): UseAuth => {
         console.log(data);
         setIsAuthenticated(true);
         setIsLoading(false);
+        setNickname(data.attributes.nickname);
       })
       .catch(() => {
         setIsAuthenticated(false);

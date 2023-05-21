@@ -60,10 +60,7 @@ export default function Header() {
   const {
     register,
     handleSubmit,
-    watch,
-    reset,
     getValues,
-    setValue,
     formState: { errors },
   } = useForm<FormInput>();
 
